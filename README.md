@@ -25,6 +25,8 @@ npx github:younss/system-thinking install --codex        # ~/.agents/skills — 
 npx github:younss/system-thinking install --codex-repo   # ./.agents/skills — commit it with your repo
 npx github:younss/system-thinking install --project     # ./.claude/skills — commit it with your repo
 npx github:younss/system-thinking install --cursor      # ./.cursor/rules
+npx github:younss/system-thinking install --gemini      # ~/.gemini/extensions — Gemini CLI, personal
+npx github:younss/system-thinking install --gemini-repo # ./.gemini/extensions — commit it with your repo
 npx github:younss/system-thinking install --dir ./skills # anywhere else
 npx github:younss/system-thinking targets               # list them
 ```
@@ -86,6 +88,7 @@ system-thinking/
 | Codex CLI, IDE extension, Codex app | `--codex` (personal) or `--codex-repo` — auto-discovered from `.agents/skills` |
 | Claude API / Agent SDK | Mount the folder, or inline `SKILL.md` into the system prompt |
 | Cursor, Windsurf | `--cursor`, then set the rule to Always or Agent Requested |
+| Gemini CLI | `--gemini` (personal) or `--gemini-repo` — installed as an extension under `.gemini/extensions`, auto-discovered on next start |
 | OpenAI Agents SDK, LangGraph, CrewAI, AutoGen | `print --refs` into instructions, or index the folder for retrieval |
 | Any router / tool-selection layer | Use the `description` field verbatim as the routing description |
 

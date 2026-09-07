@@ -47,6 +47,14 @@ const TARGETS = {
     label: 'Cursor / Windsurf (.cursor/rules)',
     dir: () => path.join(process.cwd(), '.cursor', 'rules', SKILL_NAME),
   },
+  gemini: {
+    label: 'Gemini CLI (personal, all repos)',
+    dir: () => path.join(os.homedir(), '.gemini', 'extensions', SKILL_NAME, 'skills', SKILL_NAME),
+  },
+  'gemini-repo': {
+    label: 'Gemini CLI — current repo (.gemini/extensions, committed)',
+    dir: () => path.join(process.cwd(), '.gemini', 'extensions', SKILL_NAME, 'skills', SKILL_NAME),
+  },
   opencode: {
     label: 'OpenCode / generic agent skills directory',
     dir: () => path.join(os.homedir(), '.config', 'opencode', 'skills', SKILL_NAME),
@@ -75,6 +83,8 @@ ${C.b}Options${C.x}
   --codex            ~/.agents/skills/${SKILL_NAME}
   --codex-repo       ./.agents/skills/${SKILL_NAME}
   --cursor           ./.cursor/rules/${SKILL_NAME}
+  --gemini           ~/.gemini/extensions/${SKILL_NAME} (as a skill, with a generated manifest)
+  --gemini-repo      ./.gemini/extensions/${SKILL_NAME} (same, committed with the repo)
   --opencode         ~/.config/opencode/skills/${SKILL_NAME}
   --dir <path>       Any directory you like — for frameworks with no skill loader
   --force            Overwrite an existing install
@@ -137,6 +147,18 @@ function copySkill(dest, force) {
   fs.cpSync(readSkill(), dest, { recursive: true });
 }
 
+function ensureGeminiManifest(extensionDir, force) {
+  const manifestPath = path.join(extensionDir, 'gemini-extension.json');
+  if (fs.existsSync(manifestPath) && !force) return false;
+  const manifest = {
+    name: SKILL_NAME,
+    version: pkg.version,
+    description: 'Reason about problems and decisions as dynamic systems — stocks and flows, feedback loops, delays, and policy resistance — instead of linear problem-to-solution chains.',
+  };
+  fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
+  return true;
+}
+
 function countFiles(dir) {
   let n = 0;
   for (const e of fs.readdirSync(dir, { withFileTypes: true, recursive: true })) {
@@ -152,6 +174,9 @@ function cmdInstall(opts) {
 
   const dest = target.dir();
   copySkill(dest, opts.force);
+
+  const isGemini = opts.target === 'gemini' || opts.target === 'gemini-repo';
+  if (isGemini) ensureGeminiManifest(path.dirname(path.dirname(dest)), opts.force);
 
   say();
   ok(`Installed ${C.b}${SKILL_NAME}${C.x} → ${dest}`);
@@ -170,6 +195,13 @@ function cmdInstall(opts) {
     }
   } else if (opts.target === 'cursor') {
     say(`  Cursor reads ${C.b}.cursor/rules/${C.x} — open SKILL.md and set it to Always or Agent Requested.`);
+  } else if (isGemini) {
+    say(`  Gemini CLI discovers extensions in ${C.b}.gemini/extensions/${C.x} on next start.`);
+    say(`  A minimal ${C.b}gemini-extension.json${C.x} was generated next to it — edit it freely, re-running`);
+    say(`  install won't overwrite it unless you pass ${C.b}--force${C.x}. Verify with ${C.b}/extensions${C.x}.`);
+    if (opts.target === 'gemini-repo') {
+      say(`  Commit ${C.b}.gemini/extensions/${C.x} so the rest of the team gets it too.`);
+    }
   } else {
     say(`  No auto-discovery outside skill-aware runtimes. Two ways to wire it in:`);
     say(`    1. Put SKILL.md in your system prompt, give the agent read access to references/`);
