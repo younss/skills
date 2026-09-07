@@ -19,7 +19,29 @@ Mark confidence where it matters: `A → (+, plausible) B` reads very differentl
 
 ## Map format
 
-Keep maps to 6–12 nodes. Split larger models into named subsystems rather than drawing one unreadable diagram. ASCII travels everywhere; Mermaid is fine where the runtime renders it.
+Keep maps to 6–12 nodes. Split larger models into named subsystems rather than drawing one unreadable diagram.
+
+**Default to Mermaid.** Claude Code artifacts, GitHub (files, PRs, issues), GitHub Copilot, Codex, ChatGPT, Claude.ai, VS Code, Obsidian, and Notion all render ` ```mermaid ` fences as an actual diagram now — that covers most places this output ends up. Use `flowchart` and carry the causal notation into the edges themselves, not just prose, so the picture encodes sign, delay, and nonlinearity rather than just connection:
+
+| Notation | Mermaid edge | Why |
+|---|---|---|
+| `A → (+) B` | `A -->|+| B` | plain solid arrow |
+| `A → (−) B` | `A -->|−| B` | plain solid arrow |
+| `A → [3mo] → B` | `A -.->|3mo| B` | dashed = delayed |
+| `A → (+ nonlinear) B` | `A ==>|nonlinear| B` | thick = nonlinear |
+
+```mermaid
+flowchart TD
+    Demand -->|+| Workload
+    Workload -->|+| Fatigue
+    Workload -->|+| Delay
+    Fatigue ==>|nonlinear| Quality
+    Delay -->|−| Quality
+    Quality -->|+| Satisfaction
+    Satisfaction -.->|+, 1-2mo| Demand
+```
+
+**Keep the ASCII version too whenever the output might be read raw** — a plain terminal stream, a piped log, a CI console, or any other surface that shows a mermaid fence as unrendered text instead of a picture. It costs a few lines and guarantees the map stays legible no matter where it lands:
 
 ```
    Customer demand
@@ -33,6 +55,8 @@ Keep maps to 6–12 nodes. Split larger models into named subsystems rather than
          ▼                   ▼
   Service quality ──(+)─→ Satisfaction ──(+)─→ Future demand
 ```
+
+Rule of thumb: certain the destination renders Markdown/Mermaid (a GitHub PR description, a Claude Code artifact, a ChatGPT reply) — Mermaid alone is enough. Certain it's a raw terminal or plain-text destination — ASCII alone is enough. Unsure which — include both; the pairing is cheap and never wrong.
 
 Then list the loops separately, because a diagram alone rarely makes them visible:
 

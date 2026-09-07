@@ -40,6 +40,14 @@ Assumptions holding the current structure in place, with the evidence for and ag
 Inflows → [ STOCK ] → Outflows
 ```
 
+Or, where the output renders Mermaid (see `references/patterns.md`):
+
+```mermaid
+flowchart LR
+    Inflow((Hiring rate)) --> Stock[Workforce capability]
+    Stock --> Outflow((Attrition))
+```
+
 For each: direction of change, rate if known, and whether anyone is measuring it.
 
 ## 8. Actors and goals

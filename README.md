@@ -52,6 +52,8 @@ It then runs six stages:
 
 Every recommendation has to state what *structure* it changes, the feedback and resistance it will meet, its load-bearing assumptions, and the signals that would show it failing.
 
+**Diagrams render, not just describe.** Causal maps default to Mermaid — Claude Code artifacts, GitHub, GitHub Copilot, Codex, ChatGPT, and most other current tools render `mermaid` fences natively, so the loop structure shows up as an actual picture almost everywhere this output lands. The skill still emits the ASCII version alongside it whenever the destination might be a raw terminal, a piped log, or any other surface that won't render Mermaid — so the map stays legible either way.
+
 ## Layout
 
 ```

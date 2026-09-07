@@ -85,7 +85,7 @@ Whatever the tier, every recommendation must state:
 - **Signals to monitor** — observable early indicators, including the ones that would show it failing
 - **Conditions requiring reconsideration**
 
-Include a compact causal map (ASCII or Mermaid) with loops labelled separately, as shown in `references/patterns.md`.
+Include a compact causal map, with loops labelled separately. Default to a Mermaid diagram — Claude Code, GitHub, GitHub Copilot, Codex, ChatGPT, and most other current tools render `mermaid` fences natively, so it displays as an actual graph almost everywhere this output lands. Add the ASCII version too whenever the output might be read raw — a plain terminal stream, a piped log, a CI console — where a mermaid fence would otherwise show up as unrendered text. See `references/patterns.md` for both formats, the notation-to-Mermaid mapping, and when one alone is enough.
 
 ## Confidence gate
 

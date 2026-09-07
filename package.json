@@ -1,6 +1,6 @@
 {
   "name": "system-thinking-skill",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A portable agent skill that makes an LLM reason about problems and decisions as dynamic systems — stocks and flows, feedback loops, delays, nonlinearity, adaptive actors, and policy resistance — instead of as linear problem-to-solution chains.",
   "keywords": [
     "agent-skill",
