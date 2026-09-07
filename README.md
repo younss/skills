@@ -1,5 +1,7 @@
 # younss-skills
 
+[![skills.sh](https://skills.sh/b/younss/skills)](https://skills.sh/younss/skills)
+
 A growing collection of portable agent skills — plain Markdown, `name` + `description` frontmatter, no vendor lock-in. Works across Claude Code, Codex, Cursor, Gemini CLI, and anything that can read a system prompt.
 
 ## Install
@@ -23,7 +25,10 @@ npx github:younss/skills install systems-thinking   # install just that one skil
 npx github:younss/skills                            # install every skill, to ~/.claude/skills/
 ```
 
-That copies into `~/.claude/skills/`, where Claude Code picks it up automatically. Other targets:
+That copies into `~/.claude/skills/`, where Claude Code picks it up automatically.
+
+<details>
+<summary>Other targets</summary>
 
 ```bash
 npx github:younss/skills install systems-thinking --codex        # ~/.agents/skills — Codex CLI, IDE and app
@@ -38,6 +43,8 @@ npx github:younss/skills targets                                 # list install 
 ```
 
 (Drop `systems-thinking` from any of the above to install every packaged skill instead of just one.)
+
+</details>
 
 For frameworks with no skill loader (LangGraph, CrewAI, AutoGen, the OpenAI Agents SDK), print a skill straight into a system prompt:
 
