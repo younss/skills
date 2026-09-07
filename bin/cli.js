@@ -2,19 +2,19 @@
 'use strict';
 
 /**
- * system-thinking-skill installer
+ * younss-skills installer
  *
- * Copies the systems-thinking agent skill into whichever runtime you point it at.
- * Zero dependencies, Node built-ins only, so `npx github:younss/system-thinking`
- * works without a registry publish or an install step.
+ * Copies one or more agent skills from this collection into whichever
+ * runtime you point it at. Zero dependencies, Node built-ins only, so
+ * `npx github:younss/younss-skills` works without a registry publish
+ * or an install step.
  */
 
 const fs = require('fs');
 const os = require('os');
 const path = require('path');
 
-const SKILL_NAME = 'systems-thinking';
-const SRC = path.join(__dirname, '..', 'skills', SKILL_NAME);
+const SKILLS_DIR = path.join(__dirname, '..', 'skills');
 const pkg = require('../package.json');
 
 const C = process.stdout.isTTY && !process.env.NO_COLOR
@@ -26,66 +26,110 @@ const ok = (msg) => say(`${C.g}✓${C.x} ${msg}`);
 const warn = (msg) => say(`${C.y}!${C.x} ${msg}`);
 const die = (msg) => { console.error(`${C.r}✗${C.x} ${msg}`); process.exit(1); };
 
+function discoverSkills() {
+  if (!fs.existsSync(SKILLS_DIR)) return [];
+  return fs.readdirSync(SKILLS_DIR, { withFileTypes: true })
+    .filter((e) => e.isDirectory())
+    .map((e) => e.name)
+    .filter((name) => fs.existsSync(path.join(SKILLS_DIR, name, 'SKILL.md')))
+    .sort();
+}
+
+const ALL_SKILLS = discoverSkills();
+
+// Minimal frontmatter reader — just enough for `name`/`description`,
+// including the block-scalar (`>-` / `|-`) form used for long descriptions.
+function parseFrontmatter(skillMdPath) {
+  const content = fs.readFileSync(skillMdPath, 'utf8');
+  const m = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  if (!m) return {};
+  const lines = m[1].split(/\r?\n/);
+  const result = {};
+  for (let i = 0; i < lines.length; i++) {
+    const kv = lines[i].match(/^([a-zA-Z_][\w-]*):\s*(.*)$/);
+    if (!kv) continue;
+    const key = kv[1];
+    let value = kv[2].trim();
+    if (/^[>|][-+]?$/.test(value)) {
+      const folded = value.startsWith('>');
+      const block = [];
+      let j = i + 1;
+      while (j < lines.length && (lines[j] === '' || lines[j].startsWith(' '))) {
+        block.push(lines[j].replace(/^ {1,2}/, ''));
+        j++;
+      }
+      value = block.join(folded ? ' ' : '\n').trim();
+      i = j - 1;
+    } else {
+      value = value.replace(/^(['"])(.*)\1$/, '$2');
+    }
+    result[key] = value;
+  }
+  return result;
+}
+
 const TARGETS = {
   claude: {
     label: 'Claude Code / Claude Desktop (personal skills)',
-    dir: () => path.join(os.homedir(), '.claude', 'skills', SKILL_NAME),
+    dir: (skill) => path.join(os.homedir(), '.claude', 'skills', skill),
   },
   project: {
     label: 'Current project (.claude/skills, committed with the repo)',
-    dir: () => path.join(process.cwd(), '.claude', 'skills', SKILL_NAME),
+    dir: (skill) => path.join(process.cwd(), '.claude', 'skills', skill),
   },
   codex: {
     label: 'Codex CLI / IDE / app — personal, all repos',
-    dir: () => path.join(os.homedir(), '.agents', 'skills', SKILL_NAME),
+    dir: (skill) => path.join(os.homedir(), '.agents', 'skills', skill),
   },
   'codex-repo': {
     label: 'Codex — current repo (.agents/skills, committed)',
-    dir: () => path.join(process.cwd(), '.agents', 'skills', SKILL_NAME),
+    dir: (skill) => path.join(process.cwd(), '.agents', 'skills', skill),
   },
   cursor: {
     label: 'Cursor / Windsurf (.cursor/rules)',
-    dir: () => path.join(process.cwd(), '.cursor', 'rules', SKILL_NAME),
+    dir: (skill) => path.join(process.cwd(), '.cursor', 'rules', skill),
   },
   gemini: {
     label: 'Gemini CLI (personal, all repos)',
-    dir: () => path.join(os.homedir(), '.gemini', 'extensions', SKILL_NAME, 'skills', SKILL_NAME),
+    dir: (skill) => path.join(os.homedir(), '.gemini', 'extensions', skill, 'skills', skill),
   },
   'gemini-repo': {
     label: 'Gemini CLI — current repo (.gemini/extensions, committed)',
-    dir: () => path.join(process.cwd(), '.gemini', 'extensions', SKILL_NAME, 'skills', SKILL_NAME),
+    dir: (skill) => path.join(process.cwd(), '.gemini', 'extensions', skill, 'skills', skill),
   },
   opencode: {
     label: 'OpenCode / generic agent skills directory',
-    dir: () => path.join(os.homedir(), '.config', 'opencode', 'skills', SKILL_NAME),
+    dir: (skill) => path.join(os.homedir(), '.config', 'opencode', 'skills', skill),
   },
 };
 
 function usage() {
+  const skillList = ALL_SKILLS.length ? ALL_SKILLS.join(', ') : '(none found)';
   say(`
-${C.b}system-thinking-skill${C.x} v${pkg.version}
+${C.b}younss-skills${C.x} v${pkg.version}
 
-  Installs the ${C.b}${SKILL_NAME}${C.x} agent skill — reason in feedback loops,
-  stocks and flows, delays and policy resistance instead of linear chains.
+  Installs agent skills from this collection into whichever runtime you point it at.
+  Packaged skills: ${C.b}${skillList}${C.x}
 
 ${C.b}Usage${C.x}
-  npx github:younss/system-thinking [command] [options]
+  npx github:younss/younss-skills [command] [skill] [options]
 
 ${C.b}Commands${C.x}
-  install            Copy the skill to a target directory (default)
-  print              Print SKILL.md to stdout — pipe it into any system prompt
-  path               Print the packaged skill's source path and exit
-  targets            List known install targets
+  install [skill]    Copy a skill — or all packaged skills — to a target directory (default)
+  print [skill]       Print SKILL.md to stdout — pipe it into any system prompt
+  path [skill]        Print a packaged skill's source path (or the skills/ dir)
+  list                List packaged skills with their descriptions
+  targets             List known install targets
 
 ${C.b}Options${C.x}
-  --claude           ~/.claude/skills/${SKILL_NAME}            ${C.d}(default)${C.x}
-  --project          ./.claude/skills/${SKILL_NAME}
-  --codex            ~/.agents/skills/${SKILL_NAME}
-  --codex-repo       ./.agents/skills/${SKILL_NAME}
-  --cursor           ./.cursor/rules/${SKILL_NAME}
-  --gemini           ~/.gemini/extensions/${SKILL_NAME} (as a skill, with a generated manifest)
-  --gemini-repo      ./.gemini/extensions/${SKILL_NAME} (same, committed with the repo)
-  --opencode         ~/.config/opencode/skills/${SKILL_NAME}
+  --claude           ~/.claude/skills/<skill>            ${C.d}(default)${C.x}
+  --project          ./.claude/skills/<skill>
+  --codex            ~/.agents/skills/<skill>
+  --codex-repo       ./.agents/skills/<skill>
+  --cursor           ./.cursor/rules/<skill>
+  --gemini           ~/.gemini/extensions/<skill> (as a skill, with a generated manifest)
+  --gemini-repo      ./.gemini/extensions/<skill> (same, committed with the repo)
+  --opencode         ~/.config/opencode/skills/<skill>
   --dir <path>       Any directory you like — for frameworks with no skill loader
   --force            Overwrite an existing install
   --refs             With 'print', append the reference files too
@@ -93,22 +137,25 @@ ${C.b}Options${C.x}
   -v, --version      Show version
 
 ${C.b}Examples${C.x}
-  ${C.d}# personal install, picked up by Claude Code automatically${C.x}
-  npx github:younss/system-thinking
+  ${C.d}# install every packaged skill, picked up by Claude Code automatically${C.x}
+  npx github:younss/younss-skills
+
+  ${C.d}# install just one skill${C.x}
+  npx github:younss/younss-skills install systems-thinking
 
   ${C.d}# commit it alongside a project so the whole team gets it${C.x}
-  npx github:younss/system-thinking install --project
+  npx github:younss/younss-skills install --project
 
   ${C.d}# LangGraph, CrewAI, Agents SDK — drop it anywhere and read it yourself${C.x}
-  npx github:younss/system-thinking install --dir ./agents/skills
+  npx github:younss/younss-skills install --dir ./agents/skills
 
-  ${C.d}# paste the whole method into a system prompt${C.x}
-  npx github:younss/system-thinking print --refs > systems-thinking.md
+  ${C.d}# paste one skill's method into a system prompt${C.x}
+  npx github:younss/younss-skills print systems-thinking --refs > systems-thinking.md
 `);
 }
 
 function parseArgs(argv) {
-  const opts = { cmd: null, target: null, dir: null, force: false, refs: false };
+  const opts = { cmd: null, skill: null, target: null, dir: null, force: false, refs: false };
   const rest = [];
   for (let i = 0; i < argv.length; i++) {
     const a = argv[i];
@@ -126,15 +173,30 @@ function parseArgs(argv) {
     } else rest.push(a);
   }
   opts.cmd = rest[0] || 'install';
+  opts.skill = rest[1] || null;
   return opts;
 }
 
-function readSkill() {
-  if (!fs.existsSync(SRC)) die(`Packaged skill not found at ${SRC}. The package looks incomplete.`);
-  return SRC;
+function pickSkills(opts) {
+  if (opts.skill) {
+    if (!ALL_SKILLS.includes(opts.skill)) {
+      die(`Unknown skill "${opts.skill}". Available: ${ALL_SKILLS.join(', ') || '(none)'}`);
+    }
+    return [opts.skill];
+  }
+  if (!ALL_SKILLS.length) die('No skills found in this package.');
+  return ALL_SKILLS;
 }
 
-function copySkill(dest, force) {
+function readSkill(skill) {
+  const src = path.join(SKILLS_DIR, skill);
+  if (!fs.existsSync(path.join(src, 'SKILL.md'))) {
+    die(`Packaged skill "${skill}" not found. The package looks incomplete.`);
+  }
+  return src;
+}
+
+function copySkill(src, dest, force) {
   if (fs.existsSync(dest)) {
     if (!force) {
       warn(`${dest} already exists.`);
@@ -144,16 +206,17 @@ function copySkill(dest, force) {
     fs.rmSync(dest, { recursive: true, force: true });
   }
   fs.mkdirSync(path.dirname(dest), { recursive: true });
-  fs.cpSync(readSkill(), dest, { recursive: true });
+  fs.cpSync(src, dest, { recursive: true });
 }
 
-function ensureGeminiManifest(extensionDir, force) {
+function ensureGeminiManifest(extensionDir, force, skill) {
   const manifestPath = path.join(extensionDir, 'gemini-extension.json');
   if (fs.existsSync(manifestPath) && !force) return false;
+  const fm = parseFrontmatter(path.join(SKILLS_DIR, skill, 'SKILL.md'));
   const manifest = {
-    name: SKILL_NAME,
+    name: skill,
     version: pkg.version,
-    description: 'Reason about problems and decisions as dynamic systems — stocks and flows, feedback loops, delays, and policy resistance — instead of linear problem-to-solution chains.',
+    description: fm.description || '',
   };
   fs.writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n');
   return true;
@@ -168,58 +231,76 @@ function countFiles(dir) {
 }
 
 function cmdInstall(opts) {
-  const target = opts.dir
-    ? { label: 'Custom directory', dir: () => path.resolve(opts.dir, SKILL_NAME) }
-    : TARGETS[opts.target || 'claude'];
-
-  const dest = target.dir();
-  copySkill(dest, opts.force);
-
-  const isGemini = opts.target === 'gemini' || opts.target === 'gemini-repo';
-  if (isGemini) ensureGeminiManifest(path.dirname(path.dirname(dest)), opts.force);
+  const skills = pickSkills(opts);
+  const targetKey = opts.target || 'claude';
+  const isGemini = targetKey === 'gemini' || targetKey === 'gemini-repo';
 
   say();
-  ok(`Installed ${C.b}${SKILL_NAME}${C.x} → ${dest}`);
-  say(`  ${C.d}${countFiles(dest)} files · SKILL.md + references/${C.x}`);
+  for (const skill of skills) {
+    const dest = opts.dir
+      ? path.resolve(opts.dir, skill)
+      : TARGETS[targetKey].dir(skill);
+    copySkill(readSkill(skill), dest, opts.force);
+    if (isGemini) ensureGeminiManifest(path.dirname(path.dirname(dest)), opts.force, skill);
+    ok(`Installed ${C.b}${skill}${C.x} → ${dest}`);
+    say(`  ${C.d}${countFiles(dest)} files${C.x}`);
+  }
   say();
 
-  if (!opts.dir && (opts.target || 'claude') === 'claude') {
-    say(`  Claude Code picks this up on next start. Verify with ${C.b}/skills${C.x}.`);
-  } else if (opts.target === 'project') {
+  if (!opts.dir && targetKey === 'claude') {
+    say(`  Claude Code picks ${skills.length > 1 ? 'these' : 'this'} up on next start. Verify with ${C.b}/skills${C.x}.`);
+  } else if (targetKey === 'project') {
     say(`  Commit ${C.b}.claude/skills/${C.x} so the rest of the team gets it too.`);
-  } else if (opts.target === 'codex' || opts.target === 'codex-repo') {
+  } else if (targetKey === 'codex' || targetKey === 'codex-repo') {
     say(`  Codex detects skill changes automatically — restart it if this doesn't appear.`);
-    say(`  Verify with ${C.b}/skills${C.x}, or invoke it explicitly with ${C.b}$${SKILL_NAME}${C.x}.`);
-    if (opts.target === 'codex-repo') {
-      say(`  Commit ${C.b}.agents/skills/${C.x} so the rest of the team gets it too.`);
-    }
-  } else if (opts.target === 'cursor') {
-    say(`  Cursor reads ${C.b}.cursor/rules/${C.x} — open SKILL.md and set it to Always or Agent Requested.`);
+    say(`  Verify with ${C.b}/skills${C.x}, or invoke explicitly with ${C.b}$${skills[0]}${C.x}${skills.length > 1 ? ` (or any of: ${skills.join(', ')})` : ''}.`);
+    if (targetKey === 'codex-repo') say(`  Commit ${C.b}.agents/skills/${C.x} so the rest of the team gets it too.`);
+  } else if (targetKey === 'cursor') {
+    say(`  Cursor reads ${C.b}.cursor/rules/${C.x} — open each SKILL.md and set it to Always or Agent Requested.`);
   } else if (isGemini) {
     say(`  Gemini CLI discovers extensions in ${C.b}.gemini/extensions/${C.x} on next start.`);
-    say(`  A minimal ${C.b}gemini-extension.json${C.x} was generated next to it — edit it freely, re-running`);
+    say(`  A minimal ${C.b}gemini-extension.json${C.x} was generated per skill — edit freely, re-running`);
     say(`  install won't overwrite it unless you pass ${C.b}--force${C.x}. Verify with ${C.b}/extensions${C.x}.`);
-    if (opts.target === 'gemini-repo') {
-      say(`  Commit ${C.b}.gemini/extensions/${C.x} so the rest of the team gets it too.`);
-    }
+    if (targetKey === 'gemini-repo') say(`  Commit ${C.b}.gemini/extensions/${C.x} so the rest of the team gets it too.`);
   } else {
     say(`  No auto-discovery outside skill-aware runtimes. Two ways to wire it in:`);
     say(`    1. Put SKILL.md in your system prompt, give the agent read access to references/`);
     say(`    2. Index the folder in your retrieval store and let the agent pull it by description`);
   }
-  say(`  ${C.d}Details: https://github.com/younss/system-thinking#readme${C.x}`);
+  say(`  ${C.d}Details: https://github.com/younss/younss-skills#readme${C.x}`);
   say();
 }
 
 function cmdPrint(opts) {
-  const src = readSkill();
-  process.stdout.write(fs.readFileSync(path.join(src, 'SKILL.md'), 'utf8'));
-  if (opts.refs) {
-    const refDir = path.join(src, 'references');
-    for (const f of fs.readdirSync(refDir).sort()) {
-      process.stdout.write(`\n\n<!-- references/${f} -->\n\n`);
-      process.stdout.write(fs.readFileSync(path.join(refDir, f), 'utf8'));
+  const skills = pickSkills(opts);
+  skills.forEach((skill) => {
+    const src = readSkill(skill);
+    if (skills.length > 1) process.stdout.write(`\n\n<!-- skill: ${skill} -->\n\n`);
+    process.stdout.write(fs.readFileSync(path.join(src, 'SKILL.md'), 'utf8'));
+    if (opts.refs) {
+      const refDir = path.join(src, 'references');
+      if (fs.existsSync(refDir)) {
+        for (const f of fs.readdirSync(refDir).sort()) {
+          process.stdout.write(`\n\n<!-- references/${f} (${skill}) -->\n\n`);
+          process.stdout.write(fs.readFileSync(path.join(refDir, f), 'utf8'));
+        }
+      }
     }
+  });
+}
+
+function cmdList() {
+  say();
+  if (!ALL_SKILLS.length) {
+    say(`  ${C.d}(none found)${C.x}`);
+    say();
+    return;
+  }
+  for (const skill of ALL_SKILLS) {
+    const fm = parseFrontmatter(path.join(SKILLS_DIR, skill, 'SKILL.md'));
+    say(`  ${C.b}${skill}${C.x}`);
+    say(`  ${C.d}${fm.description || '(no description)'}${C.x}`);
+    say();
   }
 }
 
@@ -227,7 +308,7 @@ function cmdTargets() {
   say();
   for (const [key, t] of Object.entries(TARGETS)) {
     say(`  ${C.b}--${key.padEnd(10)}${C.x} ${t.label}`);
-    say(`  ${' '.repeat(12)} ${C.d}${t.dir()}${C.x}`);
+    say(`  ${' '.repeat(12)} ${C.d}${t.dir('<skill>')}${C.x}`);
   }
   say(`  ${C.b}--dir <path>${C.x} Anywhere else`);
   say();
@@ -237,7 +318,8 @@ const opts = parseArgs(process.argv.slice(2));
 switch (opts.cmd) {
   case 'install': cmdInstall(opts); break;
   case 'print': cmdPrint(opts); break;
-  case 'path': say(readSkill()); break;
+  case 'path': say(opts.skill ? readSkill(opts.skill) : SKILLS_DIR); break;
+  case 'list': cmdList(); break;
   case 'targets': cmdTargets(); break;
   default: die(`Unknown command "${opts.cmd}". Run with --help.`);
 }

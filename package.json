@@ -1,10 +1,11 @@
 {
-  "name": "system-thinking-skill",
+  "name": "younss-skills",
   "version": "1.2.0",
-  "description": "A portable agent skill that makes an LLM reason about problems and decisions as dynamic systems — stocks and flows, feedback loops, delays, nonlinearity, adaptive actors, and policy resistance — instead of as linear problem-to-solution chains.",
+  "description": "A growing collection of portable agent skills — plain Markdown, no vendor lock-in. Starts with systems-thinking: reasoning about problems and decisions as dynamic systems instead of linear problem-to-solution chains.",
   "keywords": [
     "agent-skill",
     "claude-skill",
+    "skills-library",
     "systems-thinking",
     "decision-making",
     "llm",
@@ -13,19 +14,19 @@
     "causal-loop",
     "enterprise-architecture"
   ],
-  "homepage": "https://github.com/younss/system-thinking#readme",
+  "homepage": "https://github.com/younss/younss-skills#readme",
   "bugs": {
-    "url": "https://github.com/younss/system-thinking/issues"
+    "url": "https://github.com/younss/younss-skills/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/younss/system-thinking.git"
+    "url": "git+https://github.com/younss/younss-skills.git"
   },
   "license": "MIT",
   "author": "Younss",
   "type": "commonjs",
   "bin": {
-    "system-thinking-skill": "bin/cli.js"
+    "younss-skills": "bin/cli.js"
   },
   "files": [
     "bin/",
