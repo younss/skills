@@ -14,13 +14,13 @@
     "causal-loop",
     "enterprise-architecture"
   ],
-  "homepage": "https://github.com/younss/younss-skills#readme",
+  "homepage": "https://github.com/younss/skills#readme",
   "bugs": {
-    "url": "https://github.com/younss/younss-skills/issues"
+    "url": "https://github.com/younss/skills/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/younss/younss-skills.git"
+    "url": "git+https://github.com/younss/skills.git"
   },
   "license": "MIT",
   "author": "Younss",

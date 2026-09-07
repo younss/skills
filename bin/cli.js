@@ -6,7 +6,7 @@
  *
  * Copies one or more agent skills from this collection into whichever
  * runtime you point it at. Zero dependencies, Node built-ins only, so
- * `npx github:younss/younss-skills` works without a registry publish
+ * `npx github:younss/skills` works without a registry publish
  * or an install step.
  */
 
@@ -112,7 +112,7 @@ ${C.b}younss-skills${C.x} v${pkg.version}
   Packaged skills: ${C.b}${skillList}${C.x}
 
 ${C.b}Usage${C.x}
-  npx github:younss/younss-skills [command] [skill] [options]
+  npx github:younss/skills [command] [skill] [options]
 
 ${C.b}Commands${C.x}
   install [skill]    Copy a skill — or all packaged skills — to a target directory (default)
@@ -138,19 +138,19 @@ ${C.b}Options${C.x}
 
 ${C.b}Examples${C.x}
   ${C.d}# install every packaged skill, picked up by Claude Code automatically${C.x}
-  npx github:younss/younss-skills
+  npx github:younss/skills
 
   ${C.d}# install just one skill${C.x}
-  npx github:younss/younss-skills install systems-thinking
+  npx github:younss/skills install systems-thinking
 
   ${C.d}# commit it alongside a project so the whole team gets it${C.x}
-  npx github:younss/younss-skills install --project
+  npx github:younss/skills install --project
 
   ${C.d}# LangGraph, CrewAI, Agents SDK — drop it anywhere and read it yourself${C.x}
-  npx github:younss/younss-skills install --dir ./agents/skills
+  npx github:younss/skills install --dir ./agents/skills
 
   ${C.d}# paste one skill's method into a system prompt${C.x}
-  npx github:younss/younss-skills print systems-thinking --refs > systems-thinking.md
+  npx github:younss/skills print systems-thinking --refs > systems-thinking.md
 `);
 }
 
@@ -267,7 +267,7 @@ function cmdInstall(opts) {
     say(`    1. Put SKILL.md in your system prompt, give the agent read access to references/`);
     say(`    2. Index the folder in your retrieval store and let the agent pull it by description`);
   }
-  say(`  ${C.d}Details: https://github.com/younss/younss-skills#readme${C.x}`);
+  say(`  ${C.d}Details: https://github.com/younss/skills#readme${C.x}`);
   say();
 }
 
