@@ -1,7 +1,8 @@
 ---
 name: systems-thinking
 
-description: Analyze problems and decisions as dynamic systems — stocks and flows, feedback loops, delays, nonlinearity, adaptive actors, and policy resistance — instead of as linear problem-to-solution chains. Use this whenever a request involves diagnosing why something keeps happening, deciding on an intervention, evaluating a strategy or policy, predicting second- and third-order consequences, or explaining behaviour that persists despite prior fixes. Trigger it even when the user does not say "system": phrases like "why does this keep happening", "should we do X", "the fix didn't stick", "unintended consequences", "root cause", "this metric is getting worse", "we tried adding more people", or any recommendation touching multiple teams, incentives, or time horizons are all signals to use it.
+description: >-
+  Analyze problems and decisions as dynamic systems — stocks and flows, feedback loops, delays, nonlinearity, adaptive actors, and policy resistance — instead of as linear problem-to-solution chains. Use this whenever a request involves diagnosing why something keeps happening, deciding on an intervention, evaluating a strategy or policy, predicting second- and third-order consequences, or explaining behaviour that persists despite prior fixes. Trigger it even when the user does not say "system": phrases like "why does this keep happening", "should we do X", "the fix didn't stick", "unintended consequences", "root cause", "this metric is getting worse", "we tried adding more people", or any recommendation touching multiple teams, incentives, or time horizons are all signals to use it.
 ---
 
 # Systems Thinking for Decisions and Diagnosis
