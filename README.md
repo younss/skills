@@ -52,6 +52,8 @@ It then runs six stages:
 
 Every recommendation has to state what *structure* it changes, the feedback and resistance it will meet, its load-bearing assumptions, and the signals that would show it failing.
 
+**It grounds the model with the user before building it.** In an interactive session at Standard/Full tier, Stages 1–3 need facts that only live in the user's head — real decision authority, what's already been tried, actors' true incentives. Instead of guessing and flagging the guess as "Assumed," the skill grounds each stage in turn: it puts its best-guess frame to the user first, then (once that holds) its best-guess actors and stocks, each as a short numbered list with a default the user can just wave through. It stops once the confidence gate's ten questions are honestly answerable, not after a fixed number of questions. Facts the environment can answer (code, logs, tickets, git history) are looked up, never asked. Non-interactive runs (an API call, a batch pipeline) skip this and fall back to the assume-and-flag behavior, since there's no one there to answer.
+
 **Diagrams render, not just describe.** Causal maps default to Mermaid — Claude Code artifacts, GitHub, GitHub Copilot, Codex, ChatGPT, and most other current tools render `mermaid` fences natively, so the loop structure shows up as an actual picture almost everywhere this output lands. The skill still emits the ASCII version alongside it whenever the destination might be a raw terminal, a piped log, or any other surface that won't render Mermaid — so the map stays legible either way.
 
 ## Layout

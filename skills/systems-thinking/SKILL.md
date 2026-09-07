@@ -45,12 +45,38 @@ Escalate a tier when any of these appear: the intervention is hard to reverse; f
 
 **Do not use this skill** for factual lookups, single-step tasks, or genuinely simple causal questions. Applying it there produces bloated answers and buries the actual response. If the honest analysis is "this really is a simple linear problem", say so and answer directly.
 
+## Step 0.5 — Ground the frame and actors with the user (Standard/Full, interactive)
+
+Skip this for Scan tier — speed is the point there — and skip it whenever there's no one to answer: a batch pipeline, an API call expected to return one final answer, an autonomous run with no back-and-forth. In those cases go straight into the six stages and let the Known/Assumed/Unknown split in the Uncertainties section carry what you couldn't check, as before.
+
+Otherwise, don't build Stage 3's model on guesses about things that only exist in the user's head: the decision-maker's real authority, what's already been tried and how it actually went, an actor's true incentive, which side of the boundary something belongs on, whether a metric is already being gamed. A guess you later label "Assumed" cost you accuracy that one question would have bought for free while the user was right there to answer it.
+
+Ground it stage-by-stage rather than all at once — later stages depend on earlier answers, so asking them out of order just produces questions built on unstated assumptions:
+
+1. **Ground the frame first.** Before committing to Stage 1's decision, decision-maker, trigger, boundary, and time horizon, put your best-guess version of each to the user and let them correct it.
+2. **Ground the actors and stocks once the frame holds.** Only after the frame is settled, do the same for Stage 3's material: who the real actors are, what they actually want, what's quietly accumulating that the numbers don't show, what's already been tried and how it played out.
+3. **Ground suspected resistance last, and only if it would change the call.** If you suspect a specific actor will resist, or a metric will get gamed, and confirming that would change which intervention you'd recommend, ask before Stage 5 rather than assume it.
+
+Put each pass as a short numbered list, and give every item your own default so the user can wave most of them through instead of re-deriving them from scratch:
+
+```
+1. <what needs settling> — <the specific question>
+   Default if you don't correct me: <your best guess>
+
+2. <what needs settling> — <the specific question>
+   Default if you don't correct me: <your best guess>
+```
+
+Anything answerable without the user — from code, logs, tickets, metrics, git history, prior write-ups — is yours to go find, not theirs to be asked: look it up yourself, or dispatch a sub-agent, instead of spending a question on it. Reserve questions for what only the user can know: their intent, their authority, an actor's real motive, what actually happened last time this was tried.
+
+Stop grounding once you can honestly answer the confidence gate's ten questions below without guessing — or once the user tells you to proceed with the remaining gaps left flagged as assumptions. Treat this as done when nothing load-bearing is still unstated, not as a fixed number of passes.
+
 ## The six stages
 
 Each stage names the phases it covers. Read `references/analysis-phases.md` for the full protocol of any stage you are working in depth — it holds the questions, checklists, and templates that make each phase concrete.
 
 ### Stage 1 — Frame (Phase 1)
-State the decision, the desired outcome, the observable trigger, the decision-maker and their authority, the time horizons (immediate / short / medium / long, considered separately), the initial boundary, and — critically — what may have been wrongly placed outside it.
+State the decision, the desired outcome, the observable trigger, the decision-maker and their authority, the time horizons (immediate / short / medium / long, considered separately), the initial boundary, and — critically — what may have been wrongly placed outside it. Interactively at Standard/Full tier, settle these with the user via Step 0.5 rather than asserting them.
 
 ### Stage 2 — Descend below the waterline (Phase 2)
 Walk the iceberg: events → patterns over time → structures (process, incentive, information flow, governance, architecture) → mental models → hidden system (trust, informal power, fear, tacit knowledge, technical debt, fatigue, information asymmetry). Never stop at events. The structures level is where interventions actually land; the mental models level is where they last.
