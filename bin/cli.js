@@ -140,11 +140,11 @@ ${C.b}Examples${C.x}
   ${C.d}# install every packaged skill, picked up by Claude Code automatically${C.x}
   npx github:younss/skills
 
-  ${C.d}# install just one skill${C.x}
+  ${C.d}# install just one skill — name it right after 'install'${C.x}
   npx github:younss/skills install systems-thinking
 
-  ${C.d}# commit it alongside a project so the whole team gets it${C.x}
-  npx github:younss/skills install --project
+  ${C.d}# same, but to a different target — the skill name comes before the flag${C.x}
+  npx github:younss/skills install systems-thinking --project
 
   ${C.d}# LangGraph, CrewAI, Agents SDK — drop it anywhere and read it yourself${C.x}
   npx github:younss/skills install --dir ./agents/skills

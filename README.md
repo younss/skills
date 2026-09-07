@@ -4,29 +4,40 @@ A growing collection of portable agent skills — plain Markdown, `name` + `desc
 
 ## Install
 
-```bash
-npx github:younss/skills
-```
+### Option A — via [skills.sh](https://skills.sh) (recommended)
 
-Installs every skill in this repo into `~/.claude/skills/`, where Claude Code picks it up automatically. No clone, no build step, no dependencies. To install just one:
+Works across 70+ agents (Claude Code, Codex, Cursor, Cline, GitHub Copilot, ...) via the shared [`skills`](https://github.com/vercel-labs/skills) CLI. No clone, no dependency added to your project.
 
 ```bash
-npx github:younss/skills install systems-thinking
+npx skills add younss/skills --list              # see what's packaged before installing
+npx skills add younss/skills --skill systems-thinking   # install just that one skill
+npx skills add younss/skills                     # install every skill in this repo
 ```
 
-Other targets:
+### Option B — this repo's own installer
+
+Zero dependencies (Node built-ins only), and covers a couple of targets the shared CLI doesn't — Cursor rules, Gemini CLI extensions, an arbitrary `--dir`, and `print` for pasting a skill straight into a system prompt.
 
 ```bash
-npx github:younss/skills install --codex        # ~/.agents/skills — Codex CLI, IDE and app
-npx github:younss/skills install --codex-repo   # ./.agents/skills — commit it with your repo
-npx github:younss/skills install --project      # ./.claude/skills — commit it with your repo
-npx github:younss/skills install --cursor       # ./.cursor/rules
-npx github:younss/skills install --gemini       # ~/.gemini/extensions — Gemini CLI, personal
-npx github:younss/skills install --gemini-repo  # ./.gemini/extensions — commit it with your repo
-npx github:younss/skills install --dir ./skills # anywhere else
-npx github:younss/skills list                   # what's packaged, with descriptions
-npx github:younss/skills targets                # list install targets
+npx github:younss/skills install systems-thinking   # install just that one skill
+npx github:younss/skills                            # install every skill, to ~/.claude/skills/
 ```
+
+That copies into `~/.claude/skills/`, where Claude Code picks it up automatically. Other targets:
+
+```bash
+npx github:younss/skills install systems-thinking --codex        # ~/.agents/skills — Codex CLI, IDE and app
+npx github:younss/skills install systems-thinking --codex-repo   # ./.agents/skills — commit it with your repo
+npx github:younss/skills install systems-thinking --project      # ./.claude/skills — commit it with your repo
+npx github:younss/skills install systems-thinking --cursor       # ./.cursor/rules
+npx github:younss/skills install systems-thinking --gemini       # ~/.gemini/extensions — Gemini CLI, personal
+npx github:younss/skills install systems-thinking --gemini-repo  # ./.gemini/extensions — commit it with your repo
+npx github:younss/skills install systems-thinking --dir ./skills # anywhere else
+npx github:younss/skills list                                    # what's packaged, with descriptions
+npx github:younss/skills targets                                 # list install targets
+```
+
+(Drop `systems-thinking` from any of the above to install every packaged skill instead of just one.)
 
 For frameworks with no skill loader (LangGraph, CrewAI, AutoGen, the OpenAI Agents SDK), print a skill straight into a system prompt:
 
@@ -34,7 +45,7 @@ For frameworks with no skill loader (LangGraph, CrewAI, AutoGen, the OpenAI Agen
 npx github:younss/skills print systems-thinking --refs > systems-thinking.md
 ```
 
-Once published to npm, `npx younss-skills` works identically.
+Once published to npm, `npx younss-skills` works identically to `npx github:younss/skills`.
 
 ## Skills
 
