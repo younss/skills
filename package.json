@@ -1,0 +1,43 @@
+{
+  "name": "system-thinking-skill",
+  "version": "1.0.0",
+  "description": "A portable agent skill that makes an LLM reason about problems and decisions as dynamic systems — stocks and flows, feedback loops, delays, nonlinearity, adaptive actors, and policy resistance — instead of as linear problem-to-solution chains.",
+  "keywords": [
+    "agent-skill",
+    "claude-skill",
+    "systems-thinking",
+    "decision-making",
+    "llm",
+    "prompt",
+    "ai-agents",
+    "causal-loop",
+    "enterprise-architecture"
+  ],
+  "homepage": "https://github.com/younss/system-thinking#readme",
+  "bugs": {
+    "url": "https://github.com/younss/system-thinking/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/younss/system-thinking.git"
+  },
+  "license": "MIT",
+  "author": "Younss",
+  "type": "commonjs",
+  "bin": {
+    "system-thinking-skill": "bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "skills/",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node bin/cli.js print > /dev/null && node bin/cli.js install --dir ./.tmp-test --force > /dev/null && test -f ./.tmp-test/systems-thinking/SKILL.md && rm -rf ./.tmp-test && echo ok"
+  },
+  "dependencies": {}
+}
