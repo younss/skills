@@ -35,6 +35,14 @@ const TARGETS = {
     label: 'Current project (.claude/skills, committed with the repo)',
     dir: () => path.join(process.cwd(), '.claude', 'skills', SKILL_NAME),
   },
+  codex: {
+    label: 'Codex CLI / IDE / app — personal, all repos',
+    dir: () => path.join(os.homedir(), '.agents', 'skills', SKILL_NAME),
+  },
+  'codex-repo': {
+    label: 'Codex — current repo (.agents/skills, committed)',
+    dir: () => path.join(process.cwd(), '.agents', 'skills', SKILL_NAME),
+  },
   cursor: {
     label: 'Cursor / Windsurf (.cursor/rules)',
     dir: () => path.join(process.cwd(), '.cursor', 'rules', SKILL_NAME),
@@ -64,6 +72,8 @@ ${C.b}Commands${C.x}
 ${C.b}Options${C.x}
   --claude           ~/.claude/skills/${SKILL_NAME}            ${C.d}(default)${C.x}
   --project          ./.claude/skills/${SKILL_NAME}
+  --codex            ~/.agents/skills/${SKILL_NAME}
+  --codex-repo       ./.agents/skills/${SKILL_NAME}
   --cursor           ./.cursor/rules/${SKILL_NAME}
   --opencode         ~/.config/opencode/skills/${SKILL_NAME}
   --dir <path>       Any directory you like — for frameworks with no skill loader
@@ -152,6 +162,12 @@ function cmdInstall(opts) {
     say(`  Claude Code picks this up on next start. Verify with ${C.b}/skills${C.x}.`);
   } else if (opts.target === 'project') {
     say(`  Commit ${C.b}.claude/skills/${C.x} so the rest of the team gets it too.`);
+  } else if (opts.target === 'codex' || opts.target === 'codex-repo') {
+    say(`  Codex detects skill changes automatically — restart it if this doesn't appear.`);
+    say(`  Verify with ${C.b}/skills${C.x}, or invoke it explicitly with ${C.b}$${SKILL_NAME}${C.x}.`);
+    if (opts.target === 'codex-repo') {
+      say(`  Commit ${C.b}.agents/skills/${C.x} so the rest of the team gets it too.`);
+    }
   } else if (opts.target === 'cursor') {
     say(`  Cursor reads ${C.b}.cursor/rules/${C.x} — open SKILL.md and set it to Always or Agent Requested.`);
   } else {

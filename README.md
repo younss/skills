@@ -21,6 +21,8 @@ That copies the skill into `~/.claude/skills/systems-thinking`, where Claude Cod
 Other targets:
 
 ```bash
+npx github:younss/system-thinking install --codex        # ~/.agents/skills — Codex CLI, IDE and app
+npx github:younss/system-thinking install --codex-repo   # ./.agents/skills — commit it with your repo
 npx github:younss/system-thinking install --project     # ./.claude/skills — commit it with your repo
 npx github:younss/system-thinking install --cursor      # ./.cursor/rules
 npx github:younss/system-thinking install --dir ./skills # anywhere else
@@ -81,6 +83,7 @@ system-thinking/
 | Runtime | How |
 |---|---|
 | Claude Code, Claude Desktop | `npx github:younss/system-thinking` — auto-discovered |
+| Codex CLI, IDE extension, Codex app | `--codex` (personal) or `--codex-repo` — auto-discovered from `.agents/skills` |
 | Claude API / Agent SDK | Mount the folder, or inline `SKILL.md` into the system prompt |
 | Cursor, Windsurf | `--cursor`, then set the rule to Always or Agent Requested |
 | OpenAI Agents SDK, LangGraph, CrewAI, AutoGen | `print --refs` into instructions, or index the folder for retrieval |

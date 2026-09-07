@@ -1,0 +1,7 @@
+interface:
+  display_name: "Systems Thinking"
+  short_description: "Diagnose and decide using feedback loops, stocks and flows, delays and policy resistance."
+  brand_color: "#2F6F6B"
+
+policy:
+  allow_implicit_invocation: true
