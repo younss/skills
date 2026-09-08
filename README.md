@@ -58,11 +58,45 @@ Building a router or tool-selection layer instead? Use a skill's `description` f
 
 ## Skills
 
+A software product delivery team, one skill per role — genericized from a real production codebase and stripped of any company/product specifics, and scoped to the roles that actually sit on a delivery team (product, engineering, design, security) rather than adjacent org functions like HR, legal, marketing, or support. Deduplicated on purpose: product strategy and spec-writing are one skill (most delivery teams can't staff both separately), security review and red-team probing are one skill, UX design and UX audit are one skill, and privacy/data-protection compliance is a section of the security-review skill rather than a separate near-duplicate checklist.
+
+**Reasoning**
+
 | Skill | What it does |
 |---|---|
 | [systems-thinking](skills/systems-thinking/) | Reason about problems and decisions as dynamic systems — stocks and flows, feedback loops, delays, nonlinearity, adaptive actors, and policy resistance — instead of linear problem→solution chains. |
 
-Each skill's own `README.md` has the full write-up (what it does, design notes, how to adapt it); `SKILL.md` is the agent-facing instructions. New skills land as sibling folders under `skills/` — see [Layout](#layout).
+**Product**
+
+| Skill | What it does |
+|---|---|
+| [product-manager](skills/product-manager/) | Spec a feature with acceptance criteria and YAGNI discipline, or make a strategic call — RICE prioritization, Blue Ocean/ERRC, pricing, PLG mechanics. |
+
+**Engineering**
+
+| Skill | What it does |
+|---|---|
+| [backend-developer](skills/backend-developer/) | Backend conventions: error handling, background jobs, config-driven behavior, PII handling, tenant isolation where multi-tenant. |
+| [frontend-developer](skills/frontend-developer/) | UI component work in any framework (illustrated with React): accessibility, responsive/mobile-first layout, i18n/RTL, data viz, performance. |
+| [data-architect](skills/data-architect/) | Relational schema design: migrations, integrity, PII/compliance, query performance, tenant isolation where multi-tenant. |
+| [solution-architect](skills/solution-architect/) | System-wide architecture: API design, ADRs, scalability/security tradeoffs, AI/LLM pipeline architecture. |
+| [qa-test-engineer](skills/qa-test-engineer/) | Full test pyramid — unit/integration, UI/e2e, and manual/exploratory QA (test plans, bug reports) — for any stack. |
+| [devops-sre-specialist](skills/devops-sre-specialist/) | CI/CD gates, the four golden signals, environment parity, resilience patterns, IaC. |
+| [engineering-standards-guardian](skills/engineering-standards-guardian/) | Enforce SOLID/DRY, TDD, layered architecture, and YAGNI against a project's own constitution (or sane defaults). |
+
+**Security**
+
+| Skill | What it does |
+|---|---|
+| [security-review](skills/security-review/) | Static review (OWASP/ISO 27001/NIST/CIS, secrets scanning, a GDPR-style privacy baseline, LLM-output safety) or active red-team probing of a running system. |
+
+**Design**
+
+| Skill | What it does |
+|---|---|
+| [ux-designer](skills/ux-designer/) | Design new components and audit existing UI against your design system, WCAG 2.1 AA, responsive rules, and (if applicable) monetization-gating UX. |
+
+Each skill's own `README.md` (where present) has the full write-up (what it does, design notes, how to adapt it); `SKILL.md` is always the agent-facing instructions and is the only required file. New skills land as sibling folders under `skills/` — see [Layout](#layout).
 
 ## Layout
 

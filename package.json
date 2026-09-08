@@ -1,7 +1,7 @@
 {
   "name": "younss-skills",
-  "version": "1.2.0",
-  "description": "A growing collection of portable agent skills — plain Markdown, no vendor lock-in. Starts with systems-thinking: reasoning about problems and decisions as dynamic systems instead of linear problem-to-solution chains.",
+  "version": "2.0.0",
+  "description": "A growing collection of portable agent skills — plain Markdown, no vendor lock-in. A software product delivery team pack (product, engineering, security, design) plus systems-thinking: reasoning about problems and decisions as dynamic systems instead of linear problem-to-solution chains.",
   "keywords": [
     "agent-skill",
     "claude-skill",
@@ -12,7 +12,15 @@
     "prompt",
     "ai-agents",
     "causal-loop",
-    "enterprise-architecture"
+    "enterprise-architecture",
+    "product-management",
+    "backend-development",
+    "frontend-development",
+    "security-review",
+    "privacy-compliance",
+    "ux-design",
+    "devops",
+    "software-delivery"
   ],
   "homepage": "https://github.com/younss/skills#readme",
   "bugs": {
